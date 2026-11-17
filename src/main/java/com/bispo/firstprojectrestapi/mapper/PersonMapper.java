@@ -30,6 +30,13 @@ public interface PersonMapper {
     PersonEntity toEntity(Person model);
 
     /**
+     * Maps a PersonDTO to a Person model.
+     * @param dto the PersonDTO to be mapped
+     * @return the corresponding Person model
+     */
+    Person toModel(PersonDTO dto);
+
+    /**
      * Maps a Person model to a PersonDTO.
      * @param model the Person model to be mapped
      * @return the corresponding PersonDTO

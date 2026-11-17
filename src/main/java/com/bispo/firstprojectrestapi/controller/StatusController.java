@@ -2,13 +2,17 @@ package com.bispo.firstprojectrestapi.controller;
 
 import com.bispo.firstprojectrestapi.dto.PersonDTO;
 import com.bispo.firstprojectrestapi.mapper.PersonMapper;
+import com.bispo.firstprojectrestapi.model.Person;
 import com.bispo.firstprojectrestapi.service.PersonService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.repository.query.Param;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
@@ -21,5 +25,19 @@ public class StatusController {
     public List<PersonDTO> findPeople() {
         return PersonMapper.INSTANCE.toDTOList(personService.getAllPeople());
     }
+
+    @GetMapping(path = "/person/{id}")
+    public PersonDTO findById(@RequestParam("id") UUID id) {
+        Person people = personService.getPersonById(id);
+        return PersonMapper.INSTANCE.toDTO(people);
+    }
+
+    @PostMapping(path = "/person")
+    public PersonDTO createPerson(@Valid @RequestBody PersonDTO personDTO) {
+        Person person = PersonMapper.INSTANCE.toModel(personDTO);
+        Person personSaved = personService.save(person);
+        return PersonMapper.INSTANCE.toDTO(personSaved);
+    }
+
 
 }
