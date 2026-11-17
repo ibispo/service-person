@@ -18,7 +18,7 @@ public class PersonServiceImpl implements PersonService {
     private final PersonRepository personRepository;
 
     @Override
-    public List<Person> getAllPersons() {
+    public List<Person> getAllPeople() {
 
         List<PersonEntity> personEntities = personRepository.findAll();
         return personEntities.stream()

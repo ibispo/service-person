@@ -10,6 +10,6 @@ public interface PersonService {
      * Retrieves a list of all persons.
      * @return a list of Person objects
      */
-    List<Person> getAllPersons();
+    List<Person> getAllPeople();
 
 }
