@@ -6,7 +6,6 @@ import com.bispo.firstprojectrestapi.model.Person;
 import com.bispo.firstprojectrestapi.service.PersonService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -27,7 +26,7 @@ public class StatusController {
     }
 
     @GetMapping(path = "/person/{id}")
-    public PersonDTO findById(@RequestParam("id") UUID id) {
+    public PersonDTO findById(@PathVariable UUID id) {
         Person people = personService.getPersonById(id);
         return PersonMapper.INSTANCE.toDTO(people);
     }
