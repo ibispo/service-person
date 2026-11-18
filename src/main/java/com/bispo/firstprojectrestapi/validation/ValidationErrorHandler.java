@@ -12,17 +12,18 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.Instant;
 
 @RestControllerAdvice
-public class ValidationErrorMessage {
+public class ValidationErrorHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiError> handleValidationErrors(
             MethodArgumentNotValidException exception,
             HttpServletRequest request
     ) {
-        return errorResponse(HttpStatus.BAD_REQUEST, request);
+        return errorResponse(HttpStatus.BAD_REQUEST, request, exception);
     }
 
     @ExceptionHandler({
@@ -31,7 +32,14 @@ public class ValidationErrorMessage {
             HttpMessageNotReadableException.class
     })
     public ResponseEntity<ApiError> handleOtherRequestErrors(Exception exception, HttpServletRequest request) {
-        return errorResponse(HttpStatus.BAD_REQUEST, request);
+        return errorResponse(HttpStatus.BAD_REQUEST, request, exception);
+    }
+
+    @ExceptionHandler({
+            SQLIntegrityConstraintViolationException.class
+    })
+    public ResponseEntity<ApiError> handlePersistenceErrors(Exception exception, HttpServletRequest request) {
+        return errorResponse(HttpStatus.INTERNAL_SERVER_ERROR, request, exception);
     }
 
     @ExceptionHandler(PersonNotFoundException.class)
@@ -39,7 +47,7 @@ public class ValidationErrorMessage {
             PersonNotFoundException exception,
             HttpServletRequest request
     ) {
-        return errorResponse(HttpStatus.NOT_FOUND, request);
+        return errorResponse(HttpStatus.NOT_FOUND, request, exception);
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
@@ -47,19 +55,20 @@ public class ValidationErrorMessage {
             HttpRequestMethodNotSupportedException exception,
             HttpServletRequest request
     ) {
-        return errorResponse(HttpStatus.METHOD_NOT_ALLOWED, request);
+        return errorResponse(HttpStatus.METHOD_NOT_ALLOWED, request, exception);
     }
 
-    private ResponseEntity<ApiError> errorResponse(HttpStatus status, HttpServletRequest request) {
+    private ResponseEntity<ApiError> errorResponse(HttpStatus status, HttpServletRequest request, Exception exception) {
         ApiError body = new ApiError(
                 Instant.now(),
                 status.value(),
                 status.getReasonPhrase(),
-                request.getRequestURI()
+                request.getRequestURI(),
+                exception.getLocalizedMessage()
         );
         return ResponseEntity.status(status).body(body);
     }
 
-    public record ApiError(Instant timestamp, int status, String error, String path) {
+    private record ApiError(Instant timestamp, int status, String error, String path, String exception) {
     }
 }

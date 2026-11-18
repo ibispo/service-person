@@ -27,8 +27,8 @@ public class StatusController {
 
     @GetMapping(path = "/person/{id}")
     public PersonDTO findById(@PathVariable UUID id) {
-        Person people = personService.getPersonById(id);
-        return PersonMapper.INSTANCE.toDTO(people);
+        Person person = personService.getPersonById(id);
+        return PersonMapper.INSTANCE.toDTO(person);
     }
 
     @PostMapping(path = "/person")
@@ -38,5 +38,24 @@ public class StatusController {
         return PersonMapper.INSTANCE.toDTO(personSaved);
     }
 
+    @DeleteMapping(path = "/person/{id}")
+    public ResponseEntity<Void> deletePerson(@PathVariable UUID id) {
+        personService.deletePerson(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping(path = "/person/{id}")
+    public PersonDTO updatePerson(@PathVariable UUID id, @Valid @RequestBody PersonDTO personDTO) {
+        Person person = PersonMapper.INSTANCE.toModel(personDTO);
+        Person personSaved = personService.update(id, person);
+        return PersonMapper.INSTANCE.toDTO(personSaved);
+    }
+
+    @PatchMapping(path = "/person/{id}")
+    public PersonDTO patchPerson(@PathVariable UUID id, @RequestBody PersonDTO personDTO) {
+        Person person = PersonMapper.INSTANCE.toModel(personDTO);
+        Person personSaved = personService.save(person);
+        return PersonMapper.INSTANCE.toDTO(personSaved);
+    }
 
 }

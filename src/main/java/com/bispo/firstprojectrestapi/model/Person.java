@@ -9,7 +9,7 @@ import jakarta.validation.constraints.Email;
 import java.time.LocalDate;
 import java.util.UUID;
 
-@Builder
+@Builder(toBuilder = true)
 @Getter
 public class Person {
 
