@@ -3,7 +3,10 @@ package com.bispo.firstprojectrestapi.mapper;
 import com.bispo.firstprojectrestapi.dto.PersonDTO;
 import com.bispo.firstprojectrestapi.entity.PersonEntity;
 import com.bispo.firstprojectrestapi.model.Person;
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 import org.springframework.context.annotation.Configuration;
 
@@ -49,5 +52,17 @@ public interface PersonMapper {
      * @return the corresponding list of PersonDTOs
      */
     List<PersonDTO> toDTOList(List<Person> models);
+
+    /**
+     * Maps a Person model to a PersonEntity for update operations.
+     * Ignores the 'id' field to prevent overwriting the existing identifier.
+     * @param person the Person model containing updated information
+     * @param entity the existing PersonEntity to be updated
+     */
+    @Mapping(target = "id", ignore = true)
+    @BeanMapping(
+        nullValuePropertyMappingStrategy = org.mapstruct.NullValuePropertyMappingStrategy.IGNORE
+    )
+    void toEntityForUpdate(Person person, @MappingTarget PersonEntity entity);
 
 }

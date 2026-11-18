@@ -8,7 +8,6 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.List;
 import java.util.UUID;
@@ -32,10 +31,10 @@ public class StatusController {
     }
 
     @PostMapping(path = "/person")
-    public PersonDTO createPerson(@Valid @RequestBody PersonDTO personDTO) {
+    public ResponseEntity<PersonDTO> createPerson(@Valid @RequestBody PersonDTO personDTO) {
         Person person = PersonMapper.INSTANCE.toModel(personDTO);
         Person personSaved = personService.save(person);
-        return PersonMapper.INSTANCE.toDTO(personSaved);
+        return ResponseEntity.ok().body(PersonMapper.INSTANCE.toDTO(personSaved));
     }
 
     @DeleteMapping(path = "/person/{id}")
@@ -45,17 +44,17 @@ public class StatusController {
     }
 
     @PutMapping(path = "/person/{id}")
-    public PersonDTO updatePerson(@PathVariable UUID id, @Valid @RequestBody PersonDTO personDTO) {
+    public ResponseEntity<PersonDTO> updatePerson(@PathVariable UUID id, @Valid @RequestBody PersonDTO personDTO) {
         Person person = PersonMapper.INSTANCE.toModel(personDTO);
         Person personSaved = personService.update(id, person);
-        return PersonMapper.INSTANCE.toDTO(personSaved);
+        return ResponseEntity.ok().body(PersonMapper.INSTANCE.toDTO(personSaved));
     }
 
     @PatchMapping(path = "/person/{id}")
-    public PersonDTO patchPerson(@PathVariable UUID id, @RequestBody PersonDTO personDTO) {
+    public ResponseEntity<PersonDTO> patchPerson(@PathVariable UUID id, @RequestBody PersonDTO personDTO) {
         Person person = PersonMapper.INSTANCE.toModel(personDTO);
-        Person personSaved = personService.save(person);
-        return PersonMapper.INSTANCE.toDTO(personSaved);
+        Person personSaved = personService.update(id, person);
+        return ResponseEntity.ok().body(PersonMapper.INSTANCE.toDTO(personSaved));
     }
 
 }

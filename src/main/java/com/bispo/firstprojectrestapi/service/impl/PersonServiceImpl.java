@@ -47,7 +47,7 @@ public class PersonServiceImpl implements PersonService {
      * Retrieves a person by their unique identifier.
      * @param id the UUID of the person to be retrieved
      * @return the Person object corresponding to the given id
-     * @throws PersonNotFoundException
+     * @throws PersonNotFoundException if no person is found with the given id
      */
     @Override
     public Person getPersonById(UUID id) throws PersonNotFoundException {
@@ -60,7 +60,7 @@ public class PersonServiceImpl implements PersonService {
     /**
      * Deletes a person by their unique identifier.
      * @param id the UUID of the person to be deleted
-     * @throws PersonNotFoundException
+     * @throws PersonNotFoundException if no person is found with the given id
      */
     @Override
     public void deletePerson(UUID id) throws PersonNotFoundException {
@@ -69,17 +69,18 @@ public class PersonServiceImpl implements PersonService {
         personRepository.delete(personEntity);
     }
 
+    /**
+     * Updates a person by their unique identifier.
+     * @param id the UUID of the person to be updated
+     * @param person the Person object containing the updated information
+     * @return the updated Person object
+     * @throws PersonNotFoundException if no person is found with the given id
+     */
     @Override
     public Person update(UUID id, Person person) throws PersonNotFoundException {
         PersonEntity personEntity = personRepository.findById(id)
                 .orElseThrow(() -> new PersonNotFoundException("Person not found with id: " + id));
-
-        // TODO Update the personEntity with the new values from the 'person' parameter
-        // For example: personEntity.setName(person.getName());
-        // ... update other fields as needed
-
-        // person.match(personEntity); // Assuming you have a method to update the entity with the model's values
-
+        PersonMapper.INSTANCE.toEntityForUpdate(person, personEntity);
         PersonEntity personEntityUpdated = personRepository.save(personEntity);
         return PersonMapper.INSTANCE.toModel(personEntityUpdated);
     }
