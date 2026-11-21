@@ -9,7 +9,6 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 public record PersonDTO(
-        UUID id,
 
         @Pattern(regexp = "\\p{L}+(?: \\p{L}+)*", message = "Name must contain only alphabetic characters and spaces")
         String name,

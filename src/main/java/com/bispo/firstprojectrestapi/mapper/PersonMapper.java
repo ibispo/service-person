@@ -1,6 +1,7 @@
 package com.bispo.firstprojectrestapi.mapper;
 
 import com.bispo.firstprojectrestapi.dto.PersonDTO;
+import com.bispo.firstprojectrestapi.dto.PersonResponseDTO;
 import com.bispo.firstprojectrestapi.entity.PersonEntity;
 import com.bispo.firstprojectrestapi.model.Person;
 import org.mapstruct.BeanMapping;
@@ -47,11 +48,18 @@ public interface PersonMapper {
     PersonDTO toDTO(Person model);
 
     /**
+     * Maps a Person model to a PersonResponseDTO.
+     * @param model the Person model to be mapped
+     * @return the corresponding PersonResponseDTO
+     */
+    PersonResponseDTO toResponseDTO(Person model);
+
+    /**
      * Maps a list of Person models to a list of PersonDTOs.
      * @param models the list of Person models to be mapped
      * @return the corresponding list of PersonDTOs
      */
-    List<PersonDTO> toDTOList(List<Person> models);
+    List<PersonResponseDTO> toResponseDTOList(List<Person> models);
 
     /**
      * Maps a Person model to a PersonEntity for update operations.
